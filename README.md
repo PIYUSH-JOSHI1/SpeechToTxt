@@ -7,15 +7,7 @@
 
 Streamlit Translator is used to detect and translate between languages created using gTTS (google text to speech), googletrans, and streamlit python packages.
 
-## Installation
-Open command prompt and create new environment
-```
-conda create -n your_env_name python = (any_version_number)
-```
-Then Activate the newly created environment
-```
-conda activate your_env_name
-```
+
 Clone the repository using `git`
 ```
 git clone https://github.com/Prakashdeveloper03/Streamlit-Translator.git
