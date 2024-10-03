@@ -1,11 +1,9 @@
 streamlit==1.39.0
-pillow
-gtts
+Pillow
+gTTS
 googletrans==3.1.0a0
 SpeechRecognition
 langdetect
 setuptools>=65.5.1
 wheel>=0.38.0
-pip>=23.0.1
-PyAudio==0.2.13
 importlib-metadata>=4.13.0
