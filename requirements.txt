@@ -8,7 +8,5 @@ SpeechRecognition>=3.10.0
 python-dateutil>=2.8.2
 numpy>=1.22.0
 pandas>=1.3.0
-
-# Optional packages that can be commented out if causing issues
-# PyAudio can be installed separately if needed for local development
-# pyaudio>=0.2.13
+# PyAudio is now included
+PyAudio==0.2.13
