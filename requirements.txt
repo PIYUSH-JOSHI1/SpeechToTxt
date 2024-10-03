@@ -1,27 +1,14 @@
-# Core dependencies
-streamlit==1.31.1
-Pillow==10.2.0
-
-# Translation and language detection
+# Core requirements
+streamlit>=1.39.0
+Pillow>=9.0.0
 googletrans==3.1.0a0
 langdetect==1.0.9
+gTTS>=2.3.1
+SpeechRecognition>=3.10.0
+python-dateutil>=2.8.2
+numpy>=1.22.0
+pandas>=1.3.0
 
-# Text-to-Speech and Speech Recognition
-gTTS==2.5.1
-SpeechRecognition==3.10.1
-PyAudio==0.2.14  # Required for microphone input
-
-# Date and time handling
-python-dateutil==2.8.2
-
-# Audio processing
-playsound==1.3.0
-
-# Optional but recommended for better performance
-numpy==1.26.4
-pandas==2.2.0
-
-# System dependencies (commented out as they're typically installed via system package manager)
-# portaudio19-dev  # Required for PyAudio (install via apt-get on Ubuntu/Debian)
-# python3-dev      # Required for building some dependencies
-# build-essential  # Required for building some dependencies
+# Optional packages that can be commented out if causing issues
+# PyAudio can be installed separately if needed for local development
+# pyaudio>=0.2.13
