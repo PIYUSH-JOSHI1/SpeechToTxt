@@ -1,12 +1,10 @@
-streamlit
+streamlit==1.39.0
 Pillow
 gTTS
 googletrans==3.1.0a0
-SpeechRecognition 
+SpeechRecognition
 langdetect
-setuptools
-wheel
-importlib-metadata
+setuptools>=65.5.1
+wheel>=0.38.0
+importlib-metadata>=4.13.0
 streamlit-webrtc
-numpy
-python-av
