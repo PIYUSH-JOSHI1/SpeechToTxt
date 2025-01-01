@@ -144,5 +144,5 @@ MIT License - See [LICENSE](LICENSE) for details
 ## 📞 Support
 
 - GitHub Issues
-- Email: support@translator-app.com
-- Documentation: [docs/](docs/)
+- Email: piyushaundhekar@gmail.com
+
