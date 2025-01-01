@@ -368,43 +368,82 @@ def live_conversation_ui():
         lang1 = st.selectbox(
             "Speaker 1 Language",
             list(INDIAN_LANGUAGES.values()),
-            key="lang1"
+            key="lang1_select"
         )
         
     with col2:
         lang2 = st.selectbox(
             "Speaker 2 Language",
             list(INDIAN_LANGUAGES.values()),
-            key="lang2"
+            key="lang2_select"
         )
 
-    conversation_active = st.checkbox("Start Conversation")
-    
-    if conversation_active:
-        try:
-            while conversation_active:
-                # Speaker 1's turn
-                with st.container():
-                    st.write("👤 Speaker 1's turn...")
-                    if st.button("🎤 Record Speaker 1"):
-                        record_and_translate(
-                            lang1, lang2,
-                            "Speaker 1", "Speaker 2"
-                        )
+    # Use WebRTC for audio capture
+    webrtc_ctx = webrtc_streamer(
+        key="conversation",
+        mode=WebRtcMode.AUDIO_ONLY,
+        rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
+    )
+
+    if webrtc_ctx.audio_receiver:
+        if st.button("🎤 Record Speaker 1", key="speaker1_btn"):
+            process_audio_stream(webrtc_ctx, lang1, lang2, "Speaker 1", "Speaker 2")
+            
+        if st.button("🎤 Record Speaker 2", key="speaker2_btn"):
+            process_audio_stream(webrtc_ctx, lang2, lang1, "Speaker 2", "Speaker 1")
+def process_audio_stream(webrtc_ctx, src_lang, dest_lang, speaker_from, speaker_to):
+    try:
+        with st.spinner(f"Recording {speaker_from}'s voice..."):
+            audio_frames = []
+            while len(audio_frames) < 50:  # Collect ~5 seconds of audio
+                audio_frames.append(webrtc_ctx.audio_receiver.get_frame())
+                time.sleep(0.1)
+            
+            # Convert frames to audio data
+            audio_data = np.concatenate([frame.to_ndarray() for frame in audio_frames])
+            
+            # Use speech recognition
+            r = sr.Recognizer()
+            audio = sr.AudioData(audio_data.tobytes(), 
+                               sample_rate=16000,
+                               sample_width=2)
+            
+            text = r.recognize_google(audio, 
+                                   language=get_key(src_lang, INDIAN_LANGUAGES))
+            
+            st.write(f"{speaker_from} said: {text}")
+            
+            # Translate
+            translator = Translator()
+            translation = translator.translate(
+                text,
+                src=get_key(src_lang, INDIAN_LANGUAGES),
+                dest=get_key(dest_lang, INDIAN_LANGUAGES)
+            )
+            
+            st.success(f"To {speaker_to}: {translation.text}")
+            
+            # Add to history
+            st.session_state.history.append({
+                'from': src_lang,
+                'to': dest_lang,
+                'original': text,
+                'translated': translation.text
+            })
+            
+            # Text to speech
+            audio_bytes = text_to_speech(
+                translation.text,
+                get_key(dest_lang, INDIAN_LANGUAGES)
+            )
+            if audio_bytes:
+                st.audio(audio_bytes, format='audio/mp3')
                 
-                # Speaker 2's turn
-                with st.container():
-                    st.write("👤 Speaker 2's turn...")
-                    if st.button("🎤 Record Speaker 2"):
-                        record_and_translate(
-                            lang2, lang1,
-                            "Speaker 2", "Speaker 1"
-                        )
-                
-                time.sleep(0.1)  # Prevent excessive CPU usage
-                
-        except Exception as e:
-            st.error(f"An error occurred in the conversation: {str(e)}")
+    except Exception as e:
+        st.error(f"Error in processing audio: {str(e)}")
+
+
+
 
 def record_and_translate(src_lang, dest_lang, speaker_from, speaker_to):
     """Record audio and translate it"""
